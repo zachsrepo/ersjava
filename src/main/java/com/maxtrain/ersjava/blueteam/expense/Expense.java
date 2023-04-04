@@ -1,5 +1,8 @@
 package com.maxtrain.ersjava.blueteam.expense;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.maxtrain.ersjava.blueteam.employee.*;
 import com.maxtrain.ersjava.blueteam.expenseline.*;
 import jakarta.persistence.*;
@@ -19,14 +22,13 @@ public class Expense {
 	private double total;
 	
 	// FK's and Virtual Properties
-	// @ManyToOne(optional=false)
-	// @JoinColumn(name="employeeId", columnDefinition="int")
-	// private Employee employee;
-	//
-	// @JsonManagedReference
-	// @OneToMany(mappedBy="expense")
-	// private List<Expenseline> expenslines;
+	 @ManyToOne(optional=false)
+	 @JoinColumn(name="employeeId", columnDefinition="int")
+	 private Employee employee;
 	
+	 @JsonManagedReference
+	 @OneToMany(mappedBy="expense")
+	 private List<Expenseline> expenslines;
 	
 	
 	//Getters and Setters	
@@ -53,6 +55,19 @@ public class Expense {
 	}
 	public void setTotal(double total) {
 		this.total = total;
+	}
+	
+	public Employee getEmployee() {
+		return employee;
+	}
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+	public List<Expenseline> getExpenslines() {
+		return expenslines;
+	}
+	public void setExpenslines(List<Expenseline> expenslines) {
+		this.expenslines = expenslines;
 	}
 	
 
