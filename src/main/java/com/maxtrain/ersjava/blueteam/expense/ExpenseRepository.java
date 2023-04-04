@@ -1,5 +1,7 @@
 package com.maxtrain.ersjava.blueteam.expense;
 
-public interface ExpenseRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface ExpenseRepository extends CrudRepository<Expense, Integer> {
 
 }
