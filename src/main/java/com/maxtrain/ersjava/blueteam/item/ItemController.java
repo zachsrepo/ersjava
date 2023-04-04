@@ -47,7 +47,7 @@ public class ItemController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@DeleteMapping
+	@DeleteMapping("{id}")
 	public ResponseEntity deleteItem(@PathVariable int id) {
 		Optional<Item> item = itemRepo.findById(id);
 		if(item.isEmpty()) {

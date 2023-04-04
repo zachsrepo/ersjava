@@ -48,7 +48,7 @@ public class ExpenseController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@DeleteMapping
+	@DeleteMapping("{id}")
 	public ResponseEntity deleteExpense(@PathVariable int id) {
 		Optional<Expense> expense = expRepo.findById(id);
 		if(expense.isEmpty()) {
