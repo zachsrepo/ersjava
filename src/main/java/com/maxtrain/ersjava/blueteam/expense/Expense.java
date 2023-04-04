@@ -18,7 +18,7 @@ public class Expense {
 	private String description;
 	@Column(length=10, nullable=false)
 	private String status="NEW";
-	@Column(columnDefinition="decimal(11,2) NOT NULL DEFAUTL 0")
+	@Column(columnDefinition="decimal(11,2) NOT NULL DEFAULT 0")
 	private double total;
 	
 	// FK's and Virtual Properties
