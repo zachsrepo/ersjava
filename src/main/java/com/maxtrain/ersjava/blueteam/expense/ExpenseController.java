@@ -12,6 +12,11 @@ import com.maxtrain.ersjava.blueteam.employee.*;
 @RequestMapping("api/expenses")
 public class ExpenseController {
 
+	private final String Status_APPROVED = "APPROVED";
+	private final String Status_REVIEW = "REVIEW";
+	private final String Status_REJECT = "REJECTED";
+	
+	
 	@Autowired
 	private ExpenseRepository expRepo;
 	
@@ -31,6 +36,21 @@ public class ExpenseController {
 		}
 		return new ResponseEntity<Expense>(expense.get(), HttpStatus.OK);
 	}
+
+	
+	@GetMapping ("/api/expenses/approved")
+	public ResponseEntity<Iterable<Expense>> getExpensesApproved(){
+		Iterable<Expense> expensesApproved = expRepo.findByStatus(Status_APPROVED);
+		return new ResponseEntity<Iterable<Expense>>(expensesApproved, HttpStatus.OK);
+	}
+	
+	@GetMapping ("/api/expenses/review")
+	public ResponseEntity <Iterable<Expense>> getExpensesInReview(){
+		Iterable<Expense> expensesInReview = expRepo.findByStatus(Status_REVIEW);
+		return new ResponseEntity<Iterable<Expense>>(expensesInReview, HttpStatus.OK);
+	}
+	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
 	public ResponseEntity putExpense(@PathVariable int id, @RequestBody Expense expense){
@@ -66,6 +86,30 @@ public class ExpenseController {
 		
 	}
 	
+
+	@SuppressWarnings("rawtypes")
+	@PutMapping("review/{id}")
+	public ResponseEntity reviewExpense(@PathVariable int id, @RequestBody Expense expense) {
+		String newExpense = expense.getTotal() <= 75 ? Status_APPROVED : Status_REVIEW;
+		expense.setStatus(newExpense);
+		return putExpense(id, expense);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping("approve/{id}")
+		public ResponseEntity approveExpense(@PathVariable int id, @RequestBody Expense expense) {
+		expense.setStatus(Status_APPROVED);
+		return putExpense(id, expense);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping("reject/{id}")
+	public ResponseEntity rejectExpense(@PathVariable int id, @RequestBody Expense expense) {
+		expense.setStatus(Status_REJECT);
+		return putExpense(id, expense);
+	}
+	
+
 	// ***********Additional Pay Expense Method Version 2***********
 	@SuppressWarnings("rawtypes")
 	@PutMapping("payv2/{expenseId}")
@@ -87,6 +131,7 @@ public class ExpenseController {
 		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
+
 
 
 	@PostMapping
