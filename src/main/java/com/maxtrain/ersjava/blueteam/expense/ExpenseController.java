@@ -38,13 +38,13 @@ public class ExpenseController {
 	}
 
 	
-	@GetMapping ("/api/expenses/approved")
+	@GetMapping ("approved")
 	public ResponseEntity<Iterable<Expense>> getExpensesApproved(){
 		Iterable<Expense> expensesApproved = expRepo.findByStatus(Status_APPROVED);
 		return new ResponseEntity<Iterable<Expense>>(expensesApproved, HttpStatus.OK);
 	}
 	
-	@GetMapping ("/api/expenses/review")
+	@GetMapping ("review")
 	public ResponseEntity <Iterable<Expense>> getExpensesInReview(){
 		Iterable<Expense> expensesInReview = expRepo.findByStatus(Status_REVIEW);
 		return new ResponseEntity<Iterable<Expense>>(expensesInReview, HttpStatus.OK);
@@ -168,22 +168,24 @@ public class ExpenseController {
 		}
 		Iterable<Expense> expenses = expRepo.findByEmployeeId(employeeId);
 		Employee employee = anEmployee.get();
-		double expensesDue = 0;
-		double expensesPaid = 0;
+		
+		
 		for(Expense exp : expenses) {
 			if(exp.getStatus() == "PAID") {
+				employee.setExpensesPaid(0);
+				double expensesPaid = 0;
 				expensesPaid = employee.getExpensesPaid() + exp.getTotal();
+				employee.setExpensesPaid(expensesPaid);
 			}
 			else if(exp.getStatus() == "APPROVED") {
+				employee.setExpensesDue(0);
+				double expensesDue = 0;
 				expensesDue = employee.getExpensesDue() + exp.getTotal();
+				employee.setExpensesDue(expensesDue);
 			}
-			else {
-				return false;
-			}
+
 			
 		}
-		employee.setExpensesPaid(expensesPaid);
-		employee.setExpensesDue(expensesDue);
 		empRepo.save(employee);
 		return true;
 	}
