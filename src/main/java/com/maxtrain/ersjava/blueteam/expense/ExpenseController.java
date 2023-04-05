@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.maxtrain.ersjava.blueteam.employee.*;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/expenses")
@@ -14,6 +16,9 @@ public class ExpenseController {
 
 	@Autowired
 	private ExpenseRepository expRepo;
+	
+	@Autowired
+	private EmployeeRepository empRepo;
 	
 	@GetMapping
 	public ResponseEntity<Iterable<Expense>> getAllExpenses(){
@@ -40,6 +45,24 @@ public class ExpenseController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	// ***********Additional Pay Expense Method***********
+	@SuppressWarnings("rawtypes")
+	@PutMapping("pay/{expenseId}")
+	public ResponseEntity payExpense(@PathVariable int expenseId) {
+		Optional<Expense> expense = expRepo.findById(expenseId);
+		if(expense.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Expense paidExpense = expense.get();
+		Employee paidEmployee = paidExpense.getEmployee();
+		paidExpense.setStatus("PAID");
+		paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
+		paidEmployee.setExpensesDue(paidEmployee.getExpensesDue() - paidExpense.getTotal());
+		expRepo.save(paidExpense);
+		empRepo.save(paidEmployee);
+		return new ResponseEntity<>(HttpStatus.OK);
+		
+	}
 	
 	@PostMapping
 	public ResponseEntity<Expense> postExpense(@RequestBody Expense expense){
@@ -47,6 +70,7 @@ public class ExpenseController {
 		return new ResponseEntity<Expense>(newExpense, HttpStatus.CREATED);
 	}
 	
+	// Note from the PayExpenseMethodJW branch
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("{id}")
 	public ResponseEntity deleteExpense(@PathVariable int id) {
