@@ -64,6 +64,28 @@ public class ExpenseController {
 		
 	}
 	
+	// ***********Additional Pay Expense Method Version 2***********
+	@SuppressWarnings("rawtypes")
+	@PutMapping("payv2/{expenseId}")
+	public ResponseEntity payExpenseV2(@PathVariable int expenseId) {
+		Optional<Expense> expense = expRepo.findById(expenseId);
+		if(expense.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Expense paidExpense = expense.get();
+		Employee paidEmployee = paidExpense.getEmployee();
+		if(paidExpense.getStatus().equals("PAID")) {
+			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
+		}
+		paidExpense.setStatus("PAID");
+		paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
+		paidEmployee.setExpensesDue(paidEmployee.getExpensesDue() - paidExpense.getTotal());
+		expRepo.save(paidExpense);
+		empRepo.save(paidEmployee);
+		return new ResponseEntity<>(HttpStatus.OK);
+		
+	}
+	
 	@PostMapping
 	public ResponseEntity<Expense> postExpense(@RequestBody Expense expense){
 		Expense newExpense = expRepo.save(expense);
