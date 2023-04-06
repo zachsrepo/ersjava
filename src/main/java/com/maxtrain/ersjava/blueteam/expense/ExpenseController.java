@@ -127,7 +127,7 @@ public class ExpenseController {
 			expRepo.save(paidExpense);
 			empRepo.save(paidEmployee);
 			return new ResponseEntity<>(HttpStatus.OK);
-		}else if(paidExpense.getStatus().equals("APPROVED")) {
+		}else if(paidExpense.getStatus().equals("PAID")) {
 			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);	
 		}
 		
