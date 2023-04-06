@@ -173,15 +173,17 @@ public class ExpenseController {
 		for(Expense exp : expenses) {
 			if(exp.getStatus() == "PAID") {
 				employee.setExpensesPaid(0);
-				double expensesPaid = 0;
-				expensesPaid = employee.getExpensesPaid() + exp.getTotal();
+				double expensesPaid = employee.getExpensesPaid() + exp.getTotal(); 
 				employee.setExpensesPaid(expensesPaid);
 			}
 			else if(exp.getStatus() == "APPROVED") {
 				employee.setExpensesDue(0);
-				double expensesDue = 0;
-				expensesDue = employee.getExpensesDue() + exp.getTotal();
+				double expensesDue = employee.getExpensesDue() + exp.getTotal();
 				employee.setExpensesDue(expensesDue);
+			}
+			else {
+				employee.setExpensesDue(employee.getExpensesDue());
+				employee.setExpensesPaid(employee.getExpensesPaid());
 			}
 
 			
