@@ -120,6 +120,7 @@ public class ExpenseController {
 		}
 		Expense paidExpense = expense.get();
 		Employee paidEmployee = paidExpense.getEmployee();
+		// Logic to check current Status of Expense	
 		if(paidExpense.getStatus().equals("APPROVED")) {
 			paidExpense.setStatus("PAID");
 			paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
