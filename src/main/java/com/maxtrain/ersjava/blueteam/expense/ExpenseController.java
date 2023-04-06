@@ -120,16 +120,18 @@ public class ExpenseController {
 		}
 		Expense paidExpense = expense.get();
 		Employee paidEmployee = paidExpense.getEmployee();
-		if(paidExpense.getStatus().equals("PAID")) {
-			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
+		if(paidExpense.getStatus().equals("APPROVED")) {
+			paidExpense.setStatus("PAID");
+			paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
+			paidEmployee.setExpensesDue(paidEmployee.getExpensesDue() - paidExpense.getTotal());
+			expRepo.save(paidExpense);
+			empRepo.save(paidEmployee);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else if(paidExpense.getStatus().equals("APPROVED")) {
+			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);	
 		}
-		paidExpense.setStatus("PAID");
-		paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
-		paidEmployee.setExpensesDue(paidEmployee.getExpensesDue() - paidExpense.getTotal());
-		expRepo.save(paidExpense);
-		empRepo.save(paidEmployee);
-		return new ResponseEntity<>(HttpStatus.OK);
 		
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 
